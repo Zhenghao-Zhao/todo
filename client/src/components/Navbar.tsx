@@ -1,9 +1,9 @@
 import { ChangeEvent, useState } from "react";
 
-export default function Navbar({ preferMini }: { preferMini: boolean }) {
+export default function Navbar({ isSidebarOpen }: { isSidebarOpen: boolean }) {
   return (
     <div
-      className={`top-0 h-nav-h sticky flex justify-center items-center bg-white px-[20px] ${preferMini ? "ml-sidebar-min-w" : "sm:ml-sidebar-max-w ml-sidebar-min-w"}`}
+      className={`top-0 h-nav-h sticky flex justify-center items-center bg-white px-[20px] ${isSidebarOpen ? "ml-sidebar-max-w" : "ml-sidebar-min-w"}`}
     >
       <NavSearch />
     </div>

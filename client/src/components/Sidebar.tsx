@@ -15,19 +15,19 @@ import { Link, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
 export default function Sidebar({
-  preferMini,
-  setPreferMini,
+  isSidebarOpen,
+  setSidebarOpen,
 }: {
-  preferMini: boolean;
-  setPreferMini: React.Dispatch<React.SetStateAction<boolean>>;
+  isSidebarOpen: boolean;
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
     <div
-      className={`top-0 ${preferMini ? "w-sidebar-min-w" : "sm:w-sidebar-max-w w-sidebar-min-w"} fixed h-screen bg-gray-200`}
+      className={`top-0 ${isSidebarOpen ? "w-sidebar-max-w" : "w-sidebar-min-w"} fixed h-screen bg-gray-200`}
     >
       <div className="flex items-center justify-center w-full h-nav-h px-[20px] py-[10px]">
-        <Logo className={`${preferMini ? "hidden" : "sm:flex hidden"}`} />
-        <IconButton onClick={() => setPreferMini((prev) => !prev)}>
+        <Logo className={`${isSidebarOpen ? "flex" : "hidden"} `} />
+        <IconButton onClick={() => setSidebarOpen(!isSidebarOpen)}>
           <MenuOpen />
         </IconButton>
       </div>
@@ -38,7 +38,7 @@ export default function Sidebar({
             key={i}
             title={data.title}
             entries={data.entries}
-            preferMini={preferMini}
+            isSidebarOpen={isSidebarOpen}
           />
         );
       })}
@@ -63,7 +63,7 @@ function Logo({ className }: { className?: string }) {
 type SectionProps = {
   title: string;
   entries: EntryProps[];
-  preferMini: boolean;
+  isSidebarOpen: boolean;
 };
 
 type EntryProps = {
@@ -72,13 +72,13 @@ type EntryProps = {
   url: string;
 };
 
-function Section({ title, entries, preferMini }: SectionProps) {
+function Section({ title, entries, isSidebarOpen }: SectionProps) {
   const location = useLocation();
   return (
     <>
       <div className="p-2">
         <div
-          className={`text-xs mb-[5px] ${preferMini ? "hidden" : "sm:block hidden"}`}
+          className={`text-xs mb-[5px] ${isSidebarOpen ? "block" : "hidden"}`}
         >
           {title}
         </div>
@@ -91,7 +91,7 @@ function Section({ title, entries, preferMini }: SectionProps) {
                 className={`flex p-2 rounded-md ${entry.url === location.pathname && "bg-gray-500"}`}
               >
                 <p
-                  className={`mr-[10px] ${preferMini ? "hidden" : "sm:block hidden"}`}
+                  className={`mr-[10px] ${isSidebarOpen ? "block" : "hidden"} `}
                 >
                   {entry.title}
                 </p>
