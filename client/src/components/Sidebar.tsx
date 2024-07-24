@@ -16,10 +16,10 @@ import { twMerge } from "tailwind-merge";
 
 export default function Sidebar({
   isSidebarOpen,
-  setSidebarOpen,
+  toggleSidebar,
 }: {
   isSidebarOpen: boolean;
-  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleSidebar: () => void;
 }) {
   return (
     <div
@@ -27,7 +27,7 @@ export default function Sidebar({
     >
       <div className="flex items-center justify-center w-full h-nav-h px-[20px] py-[10px]">
         <Logo className={`${isSidebarOpen ? "flex" : "hidden"} `} />
-        <IconButton onClick={() => setSidebarOpen(!isSidebarOpen)}>
+        <IconButton onClick={toggleSidebar}>
           <MenuOpen />
         </IconButton>
       </div>
