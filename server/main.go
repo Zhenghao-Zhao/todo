@@ -3,10 +3,10 @@ package main
 import (
 	"net/http"
 
-	"todo/api"
+	"github.com/zhenghao-zhao/todo/app/controllers"
 )
 
 func main() {
-	server := api.NewServer()
-	http.ListenAndServe(":8080", server)
+	server := controllers.Server{}
+	server.Initialize()
 }
