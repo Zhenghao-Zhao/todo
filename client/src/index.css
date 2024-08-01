@@ -35,6 +35,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --link: 234 90.1% 64.3%;
   }
 
   .dark {
@@ -71,6 +72,9 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  input {
+    @apply !placeholder-gray-400;
   }
 }
 

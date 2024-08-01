@@ -2,11 +2,15 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
+	"github.com/zhenghao-zhao/todo/app/models"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -18,17 +22,17 @@ type Server struct {
 }
 
 type AppConfig struct {
-	Port string
+	AppPort string
 }
 
 type DBConfig struct {
-	Host     string
-	User     string
-	Password string
-	DBName   string
-	Port     string
-	SSLMode  string
-	TimeZone string
+	DBHost     string
+	DBUser     string
+	DBPassword string
+	DBName     string
+	DBPort     string
+	DBSSLMode  string
+	DBTimeZone string
 }
 
 func getEnv(name, fallback string) string {
@@ -45,17 +49,41 @@ func (s *Server) Initialize() {
 	if err != nil {
 		fmt.Println("Error loading .env file, using alternatives instead...")
 	}
-	s.DBConfig.Host = getEnv("DBHost", "localhost")
-	s.DBConfig.User = getEnv("DBUser", "zhaozhenghao")
-	s.DBConfig.Password = getEnv("DBPassword", "zhaozhenghao")
-	s.DBConfig.DBName = getEnv("DBName", "zhaozhenghao")
-	s.DBConfig.SSLMode = getEnv("DBSSLMode", "diable")
-	s.DBConfig.TimeZone = getEnv("DBTimeZone", "Asia/Shanghai")
+	s.DBHost = getEnv("DBHost", "localhost")
+	s.DBUser = getEnv("DBUser", "zhaozhenghao")
+	s.DBPassword = getEnv("DBPassword", "zhaozhenghao")
+	s.DBName = getEnv("DBName", "zhaozhenghao")
+	s.DBPort = getEnv("DBPort", "5432")
+	s.DBSSLMode = getEnv("DBSSLMode", "diable")
+	s.DBTimeZone = getEnv("DBTimeZone", "Asia/Shanghai")
 
-	s.AppConfig.Port = getEnv("AppPort", "8080")
+	s.AppPort = getEnv("AppPort", "8080")
 	s.initRoutes()
+	s.initDB()
+}
+
+func (s *Server) migrateDB() {
+	var err error
+	for _, m := range models.GetModels() {
+		err = s.AutoMigrate(m)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+func (s *Server) initDB() {
+	var err error
+	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=%v TimeZone=%v", s.DBHost, s.DBUser, s.DBPassword, s.DBName, s.DBPort, s.DBSSLMode, s.DBTimeZone)
+	s.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal("failed to connect database")
+	}
+	s.migrateDB()
 }
 
 func (s *Server) Run() {
-	http.ListenAndServe(s.AppConfig.Port, s.Router)
+	handler := cors.Default().Handler(s.Router)
+	fmt.Printf("Started server at port %v\n", s.AppPort)
+	log.Fatal(http.ListenAndServe(":"+s.AppPort, handler))
 }

@@ -23,6 +23,7 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        link: "hsl(var(--link))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -76,8 +77,10 @@ module.exports = {
         "sidebar-min-w": "var(--sidebar-min-w)",
         "nav-h": "var(--nav-h)",
       },
+      backgroundImage: {
+        registration: "url('./src/assets/bg-registration.png')",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
 };
-

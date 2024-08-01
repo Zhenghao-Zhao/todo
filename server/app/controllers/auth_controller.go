@@ -14,8 +14,8 @@ func (s *Server) Login() http.HandlerFunc {
 
 func (s *Server) DoLogin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		email := r.FormValue("email")
-		password := r.FormValue("password")
+		// email := r.FormValue("email")
+		// password := r.FormValue("password")
 	}
 }
 

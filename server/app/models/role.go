@@ -9,3 +9,5 @@ type Role struct {
 	Name        string `gorm:"size:100;not null"`
 	Description string `gorm:"size:255"`
 }
+
+func (r Role) RegisterModel() {}
