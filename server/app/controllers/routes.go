@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/zhenghao-zhao/todo/app/middlewares"
 )
 
 func (s *Server) initRoutes() {
@@ -12,5 +13,5 @@ func (s *Server) initRoutes() {
 	s.HandleFunc("/registration", s.Register()).Methods("GET")
 	s.HandleFunc("/registration", s.DoRegister()).Methods("POST")
 	s.HandleFunc("/logout", s.DoLogout()).Methods("POST")
-	s.HandleFunc("/foo", s.Foo()).Methods("GET")
+	s.HandleFunc("/foo", middlewares.AuthMiddleware(s.Foo())).Methods("GET")
 }

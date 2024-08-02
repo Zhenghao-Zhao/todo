@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -20,11 +21,17 @@ type User struct {
 func (u User) RegisterModel() {}
 
 func CreateUser(db *gorm.DB, user *User) error {
-	fmt.Printf("creating user...%v", *user)
+	fmt.Println("Creating user")
 	result := db.Create(user)
+	return result.Error
+}
 
-	if result.Error != nil {
-		return result.Error
+func FindUserByEmail(db *gorm.DB, email string) (*User, error) {
+	var user User
+	error := db.Model(User{}).Where("Lower(email) = ?", strings.ToLower(email)).First(&user).Error
+	if error != nil {
+		return nil, error
 	}
-	return nil
+
+	return &user, nil
 }

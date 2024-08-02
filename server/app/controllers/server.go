@@ -49,6 +49,8 @@ func (s *Server) Initialize() {
 	if err != nil {
 		fmt.Println("Error loading .env file, using alternatives instead...")
 	}
+
+	s.DBConfig = &DBConfig{}
 	s.DBHost = getEnv("DBHost", "localhost")
 	s.DBUser = getEnv("DBUser", "zhaozhenghao")
 	s.DBPassword = getEnv("DBPassword", "zhaozhenghao")
@@ -57,6 +59,7 @@ func (s *Server) Initialize() {
 	s.DBSSLMode = getEnv("DBSSLMode", "diable")
 	s.DBTimeZone = getEnv("DBTimeZone", "Asia/Shanghai")
 
+	s.AppConfig = &AppConfig{}
 	s.AppPort = getEnv("AppPort", "8080")
 	s.initRoutes()
 	s.initDB()

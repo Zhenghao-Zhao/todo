@@ -14,44 +14,40 @@ else
   set shortmess=aoO
 endif
 badd +1 ~/Projects/react/todo-app/server
-badd +6 app/controllers/foo_controller.go
-badd +76 app/controllers/server.go
-badd +34 app/controllers/auth_controller.go
-badd +136 term://~/Projects/react/todo-app/server//39955:/bin/zsh
-badd +3 .env
-badd +9 app/controllers/routes.go
-badd +1 go.mod
-badd +11 main.go
-badd +0 term://~/Projects/react/todo-app/server//44709:/bin/zsh
-badd +1 app/middlewares/authMiddleware.go
-badd +20 app/middlewares/corsMiddleware.go
-badd +0 app/models/user.go
+badd +593 term://~/Projects/react/todo-app/server//2301:/bin/zsh
+badd +9 app/controllers/auth_controller.go
+badd +21 app/utils/auth.go
+badd +25 app/controllers/utils.go
+badd +4 main.go
+badd +53 app/controllers/server.go
 badd +6 app/models/registry.go
+badd +180 term://~/Projects/react/todo-app/server//3320:/bin/zsh
+badd +23 app/models/user.go
+badd +6 app/middlewares/corsMiddleware.go
+badd +1 app/middlewares/authMiddleware.go
+badd +8 .env
 argglobal
 %argdel
 $argadd ~/Projects/react/todo-app/server
-edit app/models/registry.go
+edit main.go
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
+1wincmd h
+wincmd _ | wincmd |
+split
+1wincmd k
+wincmd w
+wincmd w
+wincmd _ | wincmd |
+split
+1wincmd k
+wincmd w
 wincmd _ | wincmd |
 vsplit
-2wincmd h
-wincmd _ | wincmd |
-split
-1wincmd k
-wincmd w
-wincmd w
-wincmd _ | wincmd |
-split
-1wincmd k
-wincmd w
-wincmd w
-wincmd _ | wincmd |
-split
-1wincmd k
+1wincmd h
 wincmd w
 let &splitbelow = s:save_splitbelow
 let &splitright = s:save_splitright
@@ -62,18 +58,16 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 41 + 42) / 84)
-exe 'vert 1resize ' . ((&columns * 94 + 141) / 283)
-exe '2resize ' . ((&lines * 40 + 42) / 84)
-exe 'vert 2resize ' . ((&columns * 94 + 141) / 283)
-exe '3resize ' . ((&lines * 40 + 42) / 84)
-exe 'vert 3resize ' . ((&columns * 69 + 141) / 283)
-exe '4resize ' . ((&lines * 41 + 42) / 84)
-exe 'vert 4resize ' . ((&columns * 69 + 141) / 283)
-exe '5resize ' . ((&lines * 41 + 42) / 84)
-exe 'vert 5resize ' . ((&columns * 118 + 141) / 283)
-exe '6resize ' . ((&lines * 40 + 42) / 84)
-exe 'vert 6resize ' . ((&columns * 118 + 141) / 283)
+exe '1resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 1resize ' . ((&columns * 93 + 140) / 281)
+exe '2resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 2resize ' . ((&columns * 93 + 140) / 281)
+exe '3resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 3resize ' . ((&columns * 187 + 140) / 281)
+exe '4resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 4resize ' . ((&columns * 93 + 140) / 281)
+exe '5resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 5resize ' . ((&columns * 93 + 140) / 281)
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -85,12 +79,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 5 - ((4 * winheight(0) + 20) / 41)
+let s:l = 7 - ((6 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 5
-normal! 0
+keepjumps 7
+normal! 05|
 lcd ~/Projects/react/todo-app/server
 wincmd w
 argglobal
@@ -98,7 +92,7 @@ if bufexists(fnamemodify("~/Projects/react/todo-app/server/app/controllers/serve
 if &buftype ==# 'terminal'
   silent file ~/Projects/react/todo-app/server/app/controllers/server.go
 endif
-balt ~/Projects/react/todo-app/server/app/controllers/routes.go
+balt ~/Projects/react/todo-app/server/main.go
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -109,41 +103,18 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 74 - ((31 * winheight(0) + 20) / 40)
+let s:l = 45 - ((12 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 74
-normal! 047|
-lcd ~/Projects/react/todo-app/server
-wincmd w
-argglobal
-if bufexists(fnamemodify("~/Projects/react/todo-app/server/app/models/user.go", ":p")) | buffer ~/Projects/react/todo-app/server/app/models/user.go | else | edit ~/Projects/react/todo-app/server/app/models/user.go | endif
-if &buftype ==# 'terminal'
-  silent file ~/Projects/react/todo-app/server/app/models/user.go
-endif
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 11 - ((10 * winheight(0) + 20) / 40)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 11
+keepjumps 45
 normal! 0
 lcd ~/Projects/react/todo-app/server
 wincmd w
 argglobal
-if bufexists(fnamemodify("~/Projects/react/todo-app/server/app/controllers/server.go", ":p")) | buffer ~/Projects/react/todo-app/server/app/controllers/server.go | else | edit ~/Projects/react/todo-app/server/app/controllers/server.go | endif
+if bufexists(fnamemodify("~/Projects/react/todo-app/server/app/utils/auth.go", ":p")) | buffer ~/Projects/react/todo-app/server/app/utils/auth.go | else | edit ~/Projects/react/todo-app/server/app/utils/auth.go | endif
 if &buftype ==# 'terminal'
-  silent file ~/Projects/react/todo-app/server/app/controllers/server.go
+  silent file ~/Projects/react/todo-app/server/app/utils/auth.go
 endif
 setlocal fdm=manual
 setlocal fde=0
@@ -155,20 +126,19 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 8 - ((7 * winheight(0) + 20) / 41)
+let s:l = 33 - ((32 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 8
+keepjumps 33
 normal! 0
 lcd ~/Projects/react/todo-app/server
 wincmd w
 argglobal
-if bufexists(fnamemodify("term://~/Projects/react/todo-app/server//39955:/bin/zsh", ":p")) | buffer term://~/Projects/react/todo-app/server//39955:/bin/zsh | else | edit term://~/Projects/react/todo-app/server//39955:/bin/zsh | endif
+if bufexists(fnamemodify("term://~/Projects/react/todo-app/server//2301:/bin/zsh", ":p")) | buffer term://~/Projects/react/todo-app/server//2301:/bin/zsh | else | edit term://~/Projects/react/todo-app/server//2301:/bin/zsh | endif
 if &buftype ==# 'terminal'
-  silent file term://~/Projects/react/todo-app/server//39955:/bin/zsh
+  silent file term://~/Projects/react/todo-app/server//2301:/bin/zsh
 endif
-balt ~/Projects/react/todo-app/server/app/controllers/foo_controller.go
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -177,20 +147,20 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 191 - ((40 * winheight(0) + 20) / 41)
+let s:l = 717 - ((38 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 191
+keepjumps 717
 normal! 0
 lcd ~/Projects/react/todo-app/server
 wincmd w
 argglobal
-if bufexists(fnamemodify("term://~/Projects/react/todo-app/server//44709:/bin/zsh", ":p")) | buffer term://~/Projects/react/todo-app/server//44709:/bin/zsh | else | edit term://~/Projects/react/todo-app/server//44709:/bin/zsh | endif
+if bufexists(fnamemodify("term://~/Projects/react/todo-app/server//3320:/bin/zsh", ":p")) | buffer term://~/Projects/react/todo-app/server//3320:/bin/zsh | else | edit term://~/Projects/react/todo-app/server//3320:/bin/zsh | endif
 if &buftype ==# 'terminal'
-  silent file term://~/Projects/react/todo-app/server//44709:/bin/zsh
+  silent file term://~/Projects/react/todo-app/server//3320:/bin/zsh
 endif
-balt term://~/Projects/react/todo-app/server//39955:/bin/zsh
+balt term://~/Projects/react/todo-app/server//2301:/bin/zsh
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -199,31 +169,25 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 49 - ((39 * winheight(0) + 20) / 40)
+let s:l = 186 - ((38 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 49
-let s:c = 15 - ((2 * winwidth(0) + 59) / 118)
-if s:c > 0
-  exe 'normal! ' . s:c . '|zs' . 15 . '|'
-else
-  normal! 015|
-endif
+keepjumps 186
+normal! 015|
 lcd ~/Projects/react/todo-app/server
 wincmd w
-exe '1resize ' . ((&lines * 41 + 42) / 84)
-exe 'vert 1resize ' . ((&columns * 94 + 141) / 283)
-exe '2resize ' . ((&lines * 40 + 42) / 84)
-exe 'vert 2resize ' . ((&columns * 94 + 141) / 283)
-exe '3resize ' . ((&lines * 40 + 42) / 84)
-exe 'vert 3resize ' . ((&columns * 69 + 141) / 283)
-exe '4resize ' . ((&lines * 41 + 42) / 84)
-exe 'vert 4resize ' . ((&columns * 69 + 141) / 283)
-exe '5resize ' . ((&lines * 41 + 42) / 84)
-exe 'vert 5resize ' . ((&columns * 118 + 141) / 283)
-exe '6resize ' . ((&lines * 40 + 42) / 84)
-exe 'vert 6resize ' . ((&columns * 118 + 141) / 283)
+3wincmd w
+exe '1resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 1resize ' . ((&columns * 93 + 140) / 281)
+exe '2resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 2resize ' . ((&columns * 93 + 140) / 281)
+exe '3resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 3resize ' . ((&columns * 187 + 140) / 281)
+exe '4resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 4resize ' . ((&columns * 93 + 140) / 281)
+exe '5resize ' . ((&lines * 39 + 40) / 81)
+exe 'vert 5resize ' . ((&columns * 93 + 140) / 281)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -239,6 +203,7 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :
