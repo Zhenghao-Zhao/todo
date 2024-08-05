@@ -1,16 +1,13 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/zhenghao-zhao/todo/app/models"
-	"github.com/zhenghao-zhao/todo/app/utils"
+	"github.com/zhenghao-zhao/todo/app/utils/api"
+	"github.com/zhenghao-zhao/todo/app/utils/auth"
 )
-
-func (s *Server) Login() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-	}
-}
 
 // func (s *Server) DoPreLogin() http.HandlerFunc {
 // 	return func(w http.ResponseWriter, r *http.Request) {
@@ -21,8 +18,9 @@ func (s *Server) Login() http.HandlerFunc {
 
 func (s *Server) DoLogin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if utils.IsLoggedIn(r) {
-			http.Redirect(w, r, "/dashboard", http.StatusOK)
+		fmt.Println("is logged in", auth.IsLoggedIn(r))
+		if auth.IsLoggedIn(r) {
+			api.OKResponse(w)
 			return
 		}
 
@@ -34,24 +32,17 @@ func (s *Server) DoLogin() http.HandlerFunc {
 
 		user, error = models.FindUserByEmail(s.DB, email)
 
-		if error != nil || !utils.ComparePassword(password, user.Password) {
-			apiError := ErrorResponse{Message: "Incorrect email or password", Status: http.StatusBadRequest}
-			JSONError(w, &apiError)
+		if error != nil || !auth.ComparePassword(password, user.Password) {
+			api.ErrorResponse(w, "Incorrect email or password", http.StatusBadRequest)
 			return
 		}
 
-		error = utils.CreateUserSession(w, r, user.UID.String())
+		error = auth.CreateUserSession(w, r, user.UID.String())
 		if error != nil {
-			apiError := ErrorResponse{Message: error.Error(), Status: http.StatusBadRequest}
-			JSONError(w, &apiError)
+			api.ErrorResponse(w, error.Error(), http.StatusBadRequest)
 			return
 		}
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
-	}
-}
-
-func (s *Server) Register() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+		api.OKResponse(w)
 	}
 }
 
@@ -63,18 +54,16 @@ func (s *Server) DoRegister() http.HandlerFunc {
 		lastName := r.FormValue("lastName")
 
 		if email == "" || password == "" || firstName == "" || lastName == "" {
-			apiError := ErrorResponse{Message: "email, pasword, first name and last name must not be empty", Status: http.StatusBadRequest}
-			JSONError(w, &apiError)
+			api.ErrorResponse(w, "Email, pasword, first name and last name must not be empty", http.StatusBadRequest)
 			return
 		}
 
 		var err error
 		var hashedPassword string
 
-		hashedPassword, err = utils.GeneratePassword(password)
+		hashedPassword, err = auth.GeneratePassword(password)
 		if err != nil {
-			apiError := ErrorResponse{Message: err.Error(), Status: http.StatusInternalServerError}
-			JSONError(w, &apiError)
+			api.ErrorResponse(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		userModel := models.User{}
@@ -85,27 +74,28 @@ func (s *Server) DoRegister() http.HandlerFunc {
 
 		err = models.CreateUser(s.DB, &userModel)
 		if err != nil {
-			apiError := ErrorResponse{Message: err.Error(), Status: http.StatusInternalServerError}
-			JSONError(w, &apiError)
+			api.ErrorResponse(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		err = utils.CreateUserSession(w, r, userModel.UID.String())
+		err = auth.CreateUserSession(w, r, userModel.UID.String())
 		if err != nil {
-			apiError := ErrorResponse{Message: err.Error(), Status: http.StatusInternalServerError}
-			JSONError(w, &apiError)
+			api.ErrorResponse(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		resp := Response{
-			Message: "Success",
-			Status:  http.StatusOK,
-		}
-		JSONResponse(w, &resp)
+		api.OKResponse(w)
 	}
 }
 
 func (s *Server) DoLogout() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		err := auth.RemoveUserSession(w, r)
+		if err != nil {
+			api.ErrorResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		api.OKResponse(w)
 	}
 }

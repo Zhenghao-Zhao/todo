@@ -1,4 +1,4 @@
-package utils
+package auth
 
 import (
 	"fmt"
@@ -25,23 +25,33 @@ var (
 
 func CreateUserSession(w http.ResponseWriter, r *http.Request, userID string) error {
 	fmt.Println("creating session...")
-	session, err := Store.Get(r, SessionNameUser)
+	session, err := GetCurrentUserSession(r)
 	if err != nil {
 		return err
 	}
-
 	session.Values["user_id"] = userID
 	session.Values["logged_in"] = true
-
+	fmt.Println(session.Values["logged_in"])
 	return session.Save(r, w)
 }
 
-func GetCurrentSession(r *http.Request) (*sessions.Session, error) {
+func RemoveUserSession(w http.ResponseWriter, r *http.Request) error {
+	session, err := GetCurrentUserSession(r)
+	if err != nil {
+		return err
+	}
+	session.Options.MaxAge = -1
+	err = session.Save(r, w)
+	return err
+}
+
+func GetCurrentUserSession(r *http.Request) (*sessions.Session, error) {
 	return Store.Get(r, SessionNameUser)
 }
 
 func IsLoggedIn(r *http.Request) bool {
-	session, _ := GetCurrentSession(r)
+	session, _ := GetCurrentUserSession(r)
+	fmt.Println(session.Values["logged_in"])
 	if loggedIn, ok := session.Values["logged_in"].(bool); loggedIn && ok {
 		return true
 	}
