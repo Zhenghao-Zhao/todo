@@ -11,4 +11,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:8080", // The target server for the API
+        changeOrigin: true, // Changes the origin of the host header to the target URL
+        secure: false, // If you are using a self-signed certificate
+        rewrite: (path) => path.replace(/^\/api/, ""), // Optional: Rewrite the path
+      },
+    },
+  },
 });

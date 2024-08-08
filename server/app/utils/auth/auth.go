@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/gorilla/sessions"
+	"github.com/zhenghao-zhao/todo/app/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -23,15 +24,16 @@ var (
 	SessionNameUser = "user-session"
 )
 
-func CreateUserSession(w http.ResponseWriter, r *http.Request, userID string) error {
+func CreateUserSession(w http.ResponseWriter, r *http.Request, user *models.User) error {
 	fmt.Println("creating session...")
 	session, err := GetCurrentUserSession(r)
 	if err != nil {
 		return err
 	}
-	session.Values["user_id"] = userID
+	session.Values["user_id"] = user.UID
+	session.Values["firstName"] = user.FirstName
+	session.Values["lastName"] = user.LastName
 	session.Values["logged_in"] = true
-	fmt.Println(session.Values["logged_in"])
 	return session.Save(r, w)
 }
 
@@ -51,9 +53,22 @@ func GetCurrentUserSession(r *http.Request) (*sessions.Session, error) {
 
 func IsLoggedIn(r *http.Request) bool {
 	session, _ := GetCurrentUserSession(r)
-	fmt.Println(session.Values["logged_in"])
-	if loggedIn, ok := session.Values["logged_in"].(bool); loggedIn && ok {
+	loggedIn, ok := GetSessionValue[bool](session, "logged_in")
+	if loggedIn && ok {
 		return true
 	}
 	return false
+}
+
+func GetSessionValue[T any](session *sessions.Session, key string) (T, bool) {
+	val, exists := session.Values[key]
+	fmt.Println(val, exists)
+	if !exists {
+		var zero T
+
+		return zero, false
+	}
+
+	typedVal, ok := val.(T)
+	return typedVal, ok
 }

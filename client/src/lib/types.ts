@@ -19,23 +19,31 @@ export const TaskSchema = z.object({
 
 export type Task = z.infer<typeof TaskSchema>;
 
-const emailSchema = z.string().email();
-const passwordSchema = z
+const EmailSchema = z.string().email();
+export type Email = z.infer<typeof EmailSchema>;
+
+const PasswordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters long");
+export type Password = z.infer<typeof PasswordSchema>;
 
-export const LoginInfoSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
+export const EmailFormSchema = z.object({
+  email: EmailSchema,
+});
+export type EmailForm = z.infer<typeof EmailFormSchema>;
+
+export const LoginFormSchema = z.object({
+  email: EmailSchema,
+  password: PasswordSchema,
 });
 
-export type LoginInfo = z.infer<typeof LoginInfoSchema>;
+export type LoginInfo = z.infer<typeof LoginFormSchema>;
 
-export const RegistrationInfoSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
+export const RegistrationFormSchema = z.object({
+  email: EmailSchema,
+  password: PasswordSchema,
   firstName: z.string(),
   lastName: z.string(),
 });
 
-export type RegistrationInfo = z.infer<typeof RegistrationInfoSchema>;
+export type RegistrationInfo = z.infer<typeof RegistrationFormSchema>;

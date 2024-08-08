@@ -1,16 +1,23 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "../axios";
-import { ENDPOINTS } from "../endpoints";
 import { handleError } from "./utils";
+import { ENDPOINTS } from "../endpoints";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export const useLoginMutation = () => {
+export const useEmailMutation = () => {
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
-
   const mutation = useMutation({
-    mutationFn: login,
-    onSuccess: () => {
-      window.location.reload();
+    mutationFn: mutateEmail,
+    onSuccess: (d, variables) => {
+      if (d.exists) {
+        navigate("/login-with-password", {
+          state: { email: variables.get("email") },
+        });
+      } else {
+        setErrorMessage(d.message);
+      }
     },
     onError: (e) => {
       const apiError = handleError(e);
@@ -20,11 +27,10 @@ export const useLoginMutation = () => {
       );
     },
   });
-
   return { mutation, errorMessage };
 };
 
-const login = async (loginInfo: FormData) => {
-  const response = await api.post(ENDPOINTS.LOGIN, loginInfo);
+const mutateEmail = async (email: FormData) => {
+  const response = await api.post(ENDPOINTS.CHECK_EMAIL, email);
   return response.data;
 };

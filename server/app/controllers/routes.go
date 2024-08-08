@@ -10,6 +10,8 @@ func (s *Server) initRoutes() {
 	s.HandleFunc("/", s.Home()).Methods("GET")
 	s.HandleFunc("/login", s.DoLogin()).Methods("POST")
 	s.HandleFunc("/registration", s.DoRegister()).Methods("POST")
+	s.HandleFunc("/checkEmail", s.CheckEmail()).Methods("POST")
+	s.HandleFunc("/auth", s.CheckAuth()).Methods("GET")
 	s.HandleFunc("/logout", middlewares.AuthMiddleware(s.DoLogout())).Methods("POST")
 	s.HandleFunc("/foo", middlewares.AuthMiddleware(s.Foo())).Methods("GET")
 }

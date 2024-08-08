@@ -1,24 +1,16 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/zhenghao-zhao/todo/app/models"
 	"github.com/zhenghao-zhao/todo/app/utils/api"
 	"github.com/zhenghao-zhao/todo/app/utils/auth"
 )
 
-// func (s *Server) DoPreLogin() http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		email := r.FormValue("email")
-//
-// 	}
-// }
-
 func (s *Server) DoLogin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("is logged in", auth.IsLoggedIn(r))
 		if auth.IsLoggedIn(r) {
 			api.OKResponse(w)
 			return
@@ -37,7 +29,7 @@ func (s *Server) DoLogin() http.HandlerFunc {
 			return
 		}
 
-		error = auth.CreateUserSession(w, r, user.UID.String())
+		error = auth.CreateUserSession(w, r, user)
 		if error != nil {
 			api.ErrorResponse(w, error.Error(), http.StatusBadRequest)
 			return
@@ -78,7 +70,7 @@ func (s *Server) DoRegister() http.HandlerFunc {
 			return
 		}
 
-		err = auth.CreateUserSession(w, r, userModel.UID.String())
+		err = auth.CreateUserSession(w, r, &userModel)
 		if err != nil {
 			api.ErrorResponse(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -97,5 +89,72 @@ func (s *Server) DoLogout() http.HandlerFunc {
 		}
 
 		api.OKResponse(w)
+	}
+}
+
+func (s *Server) CheckEmail() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		email := r.FormValue("email")
+		exists, err := models.CheckEmailExists(s.DB, email)
+		if err != nil {
+			api.ErrorResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		response := struct {
+			Exists  bool   `json:"exists"`
+			Message string `json:"message"`
+		}{
+			Exists:  exists,
+			Message: "The email doesn't belong to any account",
+		}
+
+		api.JSONResponse(w, response, 200)
+	}
+}
+
+func (s *Server) CheckAuth() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		session, err := auth.GetCurrentUserSession(r)
+		if err != nil {
+			api.ErrorResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		loggedIn, ok := auth.GetSessionValue[bool](session, "logged_in")
+		if !loggedIn || !ok {
+			api.ErrorResponse(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		firstName, ok := auth.GetSessionValue[string](session, "firstName")
+		if !ok {
+			api.ErrorResponse(w, "", http.StatusInternalServerError)
+			return
+		}
+
+		lastName, ok := auth.GetSessionValue[string](session, "lastName")
+		if !ok {
+			api.ErrorResponse(w, "", http.StatusInternalServerError)
+			return
+		}
+
+		uid, ok := auth.GetSessionValue[uuid.UUID](session, "user_id")
+		if !ok {
+			api.ErrorResponse(w, "", http.StatusInternalServerError)
+			return
+		}
+
+		response := struct {
+			FirstName string    `json:"firstName"`
+			LastName  string    `json:"lastName"`
+			UID       uuid.UUID `json:"userID"`
+		}{
+			FirstName: firstName,
+			LastName:  lastName,
+			UID:       uid,
+		}
+
+		api.JSONResponse(w, response, 200)
 	}
 }

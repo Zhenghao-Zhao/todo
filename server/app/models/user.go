@@ -28,10 +28,18 @@ func CreateUser(db *gorm.DB, user *User) error {
 
 func FindUserByEmail(db *gorm.DB, email string) (*User, error) {
 	var user User
-	error := db.Model(User{}).Where("Lower(email) = ?", strings.ToLower(email)).First(&user).Error
+	error := db.Model(User{}).Where("email = ?", strings.ToLower(email)).First(&user).Error
 	if error != nil {
 		return nil, error
 	}
-
 	return &user, nil
+}
+
+func CheckEmailExists(db *gorm.DB, email string) (bool, error) {
+	var count int64
+	err := db.Model(User{}).Where("email = ?", strings.ToLower(email)).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }

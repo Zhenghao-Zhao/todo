@@ -19,6 +19,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { RadioGroupItem, RadioGroup } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   return (
@@ -27,6 +28,7 @@ export default function Dashboard() {
         <CardHeader>
           <CardTitle>
             <div className="flex items-center">
+              <Link to={"/foo"}>Foo</Link>
               <p>My Tasks</p>
               <CreateTask className="!ml-4" />
             </div>
